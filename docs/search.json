@@ -1,0 +1,93 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog"
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Post With Code",
+    "section": "",
+    "text": "This is a post with executable code.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "posts/hw2-card-krueger/index.html",
+    "href": "posts/hw2-card-krueger/index.html",
+    "title": "复现 Card & Krueger (1994)：最低工资与就业",
+    "section": "",
+    "text": "Card 和 Krueger（1994）是实证经济学中最具影响力的论文之一，发表于 American Economic Review。该研究挑战了传统经济学的核心预测：提高最低工资会降低就业。\n\n\n1992年4月1日，新泽西州（NJ）将最低工资从每小时 $4.25 提高到 $5.05。相邻的宾夕法尼亚州（PA）最低工资保持不变。作者在政策实施前（1992年2月）和实施后（1992年11月）调查了两个州共约410家快餐连锁店，比较就业变化。\n\n\n\n\\[\n\\text{DiD} = (\\bar{Y}_{NJ,\\text{after}} - \\bar{Y}_{NJ,\\text{before}}) - (\\bar{Y}_{PA,\\text{after}} - \\bar{Y}_{PA,\\text{before}})\n\\]\n这种方法的因果逻辑是：\n\n宾夕法尼亚州作为对照组，代表”如果没有政策，新泽西州会发生什么”\n两组在政策前有平行趋势（parallel trends）的假设\n通过差分消除了共同时间趋势的干扰（如宏观经济波动）\n因此，DiD估计量可以被解读为最低工资政策对就业的因果效应"
+  },
+  {
+    "objectID": "posts/hw2-card-krueger/index.html#引言",
+    "href": "posts/hw2-card-krueger/index.html#引言",
+    "title": "复现 Card & Krueger (1994)：最低工资与就业",
+    "section": "",
+    "text": "Card 和 Krueger（1994）是实证经济学中最具影响力的论文之一，发表于 American Economic Review。该研究挑战了传统经济学的核心预测：提高最低工资会降低就业。\n\n\n1992年4月1日，新泽西州（NJ）将最低工资从每小时 $4.25 提高到 $5.05。相邻的宾夕法尼亚州（PA）最低工资保持不变。作者在政策实施前（1992年2月）和实施后（1992年11月）调查了两个州共约410家快餐连锁店，比较就业变化。\n\n\n\n\\[\n\\text{DiD} = (\\bar{Y}_{NJ,\\text{after}} - \\bar{Y}_{NJ,\\text{before}}) - (\\bar{Y}_{PA,\\text{after}} - \\bar{Y}_{PA,\\text{before}})\n\\]\n这种方法的因果逻辑是：\n\n宾夕法尼亚州作为对照组，代表”如果没有政策，新泽西州会发生什么”\n两组在政策前有平行趋势（parallel trends）的假设\n通过差分消除了共同时间趋势的干扰（如宏观经济波动）\n因此，DiD估计量可以被解读为最低工资政策对就业的因果效应"
+  },
+  {
+    "objectID": "posts/hw2-card-krueger/index.html#数据读取与准备",
+    "href": "posts/hw2-card-krueger/index.html#数据读取与准备",
+    "title": "复现 Card & Krueger (1994)：最低工资与就业",
+    "section": "2. 数据读取与准备",
+    "text": "2. 数据读取与准备\n\n\nCode\nlibrary(tidyverse)\nlibrary(knitr)\nlibrary(broom)\n\n# 直接从 Card 的主页下载数据\ntemp &lt;- tempfile()\ndownload.file(\"http://davidcard.berkeley.edu/data_sets/njmin.zip\",\n              destfile = temp, mode = \"wb\")\ntempdir_path &lt;- tempdir()\nunzip(temp, exdir = tempdir_path)\n\n# 读取变量名（来自 codebook）\ncodebook &lt;- read_lines(file.path(tempdir_path, \"codebook\"))\n\nvariable_names &lt;- codebook[8:59] %&gt;%\n  `[`(-c(5, 6, 13, 14, 32, 33)) %&gt;%\n  str_sub(1, 13) %&gt;%\n  str_squish() %&gt;%\n  str_to_lower()\n\n# 读取数据\ndf &lt;- read_table(file.path(tempdir_path, \"public.dat\"),\n                 col_names = FALSE) %&gt;%\n  select(-X47) %&gt;%\n  `colnames&lt;-`(variable_names) %&gt;%\n  mutate_all(as.numeric)\n\n# 构建关键变量\ndf &lt;- df %&gt;%\n  mutate(\n    nj         = state,\n    fte_before = empft  + 0.5 * emppt  + nmgrs,\n    fte_after  = empft2 + 0.5 * emppt2 + nmgrs2,\n    fte_change = fte_after - fte_before,\n    state_name = if_else(nj == 1, \"New Jersey\", \"Pennsylvania\")\n  )\n\ncat(\"数据读取成功！共\", nrow(df), \"家餐厅\\n\")\n\n\n数据读取成功！共 410 家餐厅"
+  },
+  {
+    "objectID": "posts/hw2-card-krueger/index.html#复现-table-2描述性统计",
+    "href": "posts/hw2-card-krueger/index.html#复现-table-2描述性统计",
+    "title": "复现 Card & Krueger (1994)：最低工资与就业",
+    "section": "3. 复现 Table 2：描述性统计",
+    "text": "3. 复现 Table 2：描述性统计\nTable 2 描述了调查前（Wave 1）各连锁店的基本特征，验证 NJ 与 PA 之间无明显系统性差异。\n\n\nCode\nchars &lt;- df %&gt;%\n  group_by(state_name) %&gt;%\n  summarise(\n    `FTE 就业（调查前）`  = round(mean(fte_before, na.rm = TRUE), 2),\n    `全职员工比例`        = round(mean(empft / (empft + emppt), na.rm = TRUE), 3),\n    `初始工资（$/hr）`    = round(mean(wage_st, na.rm = TRUE), 2),\n    `营业时间（小时/天）` = round(mean(hrsopen, na.rm = TRUE), 2),\n    `样本量 N`            = n()\n  ) %&gt;%\n  pivot_longer(-state_name, names_to = \"变量\") %&gt;%\n  pivot_wider(names_from = state_name, values_from = value)\n\nkable(chars,\n      col.names = c(\"变量\", \"New Jersey\", \"Pennsylvania\"),\n      align     = c(\"l\", \"c\", \"c\"),\n      caption   = \"Table 2 复现：调查前各餐厅特征均值\")\n\n\n\nTable 2 复现：调查前各餐厅特征均值\n\n\n变量\nNew Jersey\nPennsylvania\n\n\n\n\nFTE 就业（调查前）\n20.440\n23.330\n\n\n全职员工比例\n0.286\n0.303\n\n\n初始工资（$/hr）\n4.610\n4.630\n\n\n营业时间（小时/天）\n14.420\n14.530\n\n\n样本量 N\n331.000\n79.000\n\n\n\n\n\n\n解读：NJ 和 PA 的餐厅在就业规模、工资水平等方面基本相似，说明两组在政策实施前具有可比性，有助于满足 DiD 的平行趋势假设。"
+  },
+  {
+    "objectID": "posts/hw2-card-krueger/index.html#复现-table-3双重差分核心结果",
+    "href": "posts/hw2-card-krueger/index.html#复现-table-3双重差分核心结果",
+    "title": "复现 Card & Krueger (1994)：最低工资与就业",
+    "section": "4. 复现 Table 3：双重差分核心结果",
+    "text": "4. 复现 Table 3：双重差分核心结果\nTable 3 是论文的核心，展示各连锁店就业变化的 DiD 估计。\n\n\nCode\n# 计算各组均值和标准误\nstats &lt;- df %&gt;%\n  group_by(state_name) %&gt;%\n  summarise(\n    before_mean = mean(fte_before, na.rm = TRUE),\n    before_se   = sd(fte_before,   na.rm = TRUE) / sqrt(sum(!is.na(fte_before))),\n    after_mean  = mean(fte_after,  na.rm = TRUE),\n    after_se    = sd(fte_after,    na.rm = TRUE) / sqrt(sum(!is.na(fte_after))),\n    change_mean = mean(fte_change, na.rm = TRUE),\n    change_se   = sd(fte_change,   na.rm = TRUE) / sqrt(sum(!is.na(fte_change))),\n    .groups = \"drop\"\n  )\n\nnj &lt;- stats %&gt;% filter(state_name == \"New Jersey\")\npa &lt;- stats %&gt;% filter(state_name == \"Pennsylvania\")\n\ndid    &lt;- nj$change_mean - pa$change_mean\ndid_se &lt;- sqrt(nj$change_se^2 + pa$change_se^2)\n\nf &lt;- function(m, s) sprintf(\"%.2f (%.2f)\", m, s)\n\ntable3 &lt;- tibble(\n  `变量` = c(\n    \"1. FTE 就业（调查前）\",\n    \"2. FTE 就业（调查后）\",\n    \"3. 就业变化（调查后 - 调查前）\"\n  ),\n  `New Jersey` = c(\n    f(nj$before_mean, nj$before_se),\n    f(nj$after_mean,  nj$after_se),\n    f(nj$change_mean, nj$change_se)\n  ),\n  `Pennsylvania` = c(\n    f(pa$before_mean, pa$before_se),\n    f(pa$after_mean,  pa$after_se),\n    f(pa$change_mean, pa$change_se)\n  ),\n  `差值 (NJ - PA)` = c(\n    f(nj$before_mean - pa$before_mean, sqrt(nj$before_se^2 + pa$before_se^2)),\n    f(nj$after_mean  - pa$after_mean,  sqrt(nj$after_se^2  + pa$after_se^2)),\n    f(did, did_se)\n  )\n)\n\nkable(table3,\n      align   = c(\"l\", \"c\", \"c\", \"c\"),\n      caption = \"Table 3 复现：就业变化的双重差分估计（括号内为标准误）\")\n\n\n\nTable 3 复现：就业变化的双重差分估计（括号内为标准误）\n\n\n\n\n\n\n\n\n变量\nNew Jersey\nPennsylvania\n差值 (NJ - PA)\n\n\n\n\n1. FTE 就业（调查前）\n20.44 (0.51)\n23.33 (1.35)\n-2.89 (1.44)\n\n\n2. FTE 就业（调查后）\n21.03 (0.52)\n21.17 (0.94)\n-0.14 (1.08)\n\n\n3. 就业变化（调查后 - 调查前）\n0.47 (0.48)\n-2.28 (1.25)\n2.75 (1.34)\n\n\n\n\n\n\n核心发现：DiD 估计量为 2.75，表示相较于宾夕法尼亚州，新泽西州快餐业就业不降反升。这挑战了传统经济学的预测。"
+  },
+  {
+    "objectID": "posts/hw2-card-krueger/index.html#复现-table-4column-i回归形式的-did",
+    "href": "posts/hw2-card-krueger/index.html#复现-table-4column-i回归形式的-did",
+    "title": "复现 Card & Krueger (1994)：最低工资与就业",
+    "section": "5. 复现 Table 4（Column i）：回归形式的 DiD",
+    "text": "5. 复现 Table 4（Column i）：回归形式的 DiD\nDiD 也可以用回归来表示：\n\\[\n\\text{FTE}_{it} = \\alpha + \\beta_1 \\cdot \\text{NJ}_i + \\beta_2 \\cdot \\text{After}_t + \\beta_3 \\cdot (\\text{NJ}_i \\times \\text{After}_t) + \\varepsilon_{it}\n\\]\n其中 \\(\\beta_3\\) 就是 DiD 估计量。\n\n\nCode\ndf_long &lt;- df %&gt;%\n  select(sheet, nj, state_name, fte_before, fte_after) %&gt;%\n  pivot_longer(cols = c(fte_before, fte_after),\n               names_to = \"period\", values_to = \"fte\") %&gt;%\n  mutate(\n    after      = if_else(period == \"fte_after\", 1, 0),\n    nj_x_after = nj * after\n  ) %&gt;%\n  filter(!is.na(fte))\n\nmodel_i &lt;- lm(fte ~ nj + after + nj_x_after, data = df_long)\n\ntidy(model_i) %&gt;%\n  mutate(\n    term = case_when(\n      term == \"(Intercept)\" ~ \"截距（PA × 调查前）\",\n      term == \"nj\"          ~ \"NJ 虚拟变量\",\n      term == \"after\"       ~ \"调查后虚拟变量\",\n      term == \"nj_x_after\"  ~ \"NJ × 调查后（DiD 估计量）\",\n      TRUE ~ term\n    ),\n    estimate  = round(estimate,  3),\n    std.error = round(std.error, 3),\n    p.value   = round(p.value,   3)\n  ) %&gt;%\n  select(term, estimate, std.error, p.value) %&gt;%\n  kable(col.names = c(\"变量\", \"系数\", \"标准误\", \"p 值\"),\n        align     = c(\"l\", \"c\", \"c\", \"c\"),\n        caption   = \"Table 4 Column i 复现：回归形式的双重差分\")\n\n\n\nTable 4 Column i 复现：回归形式的双重差分\n\n\n变量\n系数\n标准误\np 值\n\n\n\n\n截距（PA × 调查前）\n23.331\n1.072\n0.000\n\n\nNJ 虚拟变量\n-2.892\n1.194\n0.016\n\n\n调查后虚拟变量\n-2.166\n1.516\n0.154\n\n\nNJ × 调查后（DiD 估计量）\n2.754\n1.688\n0.103"
+  },
+  {
+    "objectID": "posts/hw2-card-krueger/index.html#额外内容可视化-did",
+    "href": "posts/hw2-card-krueger/index.html#额外内容可视化-did",
+    "title": "复现 Card & Krueger (1994)：最低工资与就业",
+    "section": "6. 额外内容：可视化 DiD",
+    "text": "6. 额外内容：可视化 DiD\n论文只用表格呈现结果，这里用图形直观展示双重差分的逻辑。\n\n\nCode\nplot_data &lt;- df_long %&gt;%\n  group_by(state_name, after) %&gt;%\n  summarise(\n    mean_fte = mean(fte, na.rm = TRUE),\n    se_fte   = sd(fte,   na.rm = TRUE) / sqrt(n()),\n    .groups  = \"drop\"\n  ) %&gt;%\n  mutate(\n    period = if_else(after == 0, \"Before\\n(Feb 1992)\", \"After\\n(Nov 1992)\"),\n    period = factor(period, levels = c(\"Before\\n(Feb 1992)\", \"After\\n(Nov 1992)\"))\n  )\n\nggplot(plot_data, aes(x = period, y = mean_fte,\n                      color = state_name, group = state_name)) +\n  geom_line(linewidth = 1.3) +\n  geom_point(size = 4.5) +\n  geom_errorbar(aes(ymin = mean_fte - 1.96 * se_fte,\n                    ymax = mean_fte + 1.96 * se_fte),\n                width = 0.06, linewidth = 0.9) +\n  annotate(\"text\", x = 1.5, y = 20.8,\n           label = paste0(\"DiD = \", round(did, 2)),\n           size = 5, fontface = \"bold\", color = \"#2c7bb6\") +\n  scale_color_manual(\n    values = c(\"New Jersey\" = \"#d7191c\", \"Pennsylvania\" = \"#2c7bb6\"),\n    name   = \"State\"\n  ) +\n  labs(\n    title    = \"Effect of Minimum Wage Increase on Fast-Food Employment\",\n    subtitle = \"Card & Krueger (1994) — Difference-in-Differences\",\n    x        = NULL,\n    y        = \"Mean FTE Employment\",\n    caption  = \"Error bars = 95% CI. NJ raised minimum wage April 1992; PA did not.\"\n  ) +\n  theme_minimal(base_size = 13) +\n  theme(\n    legend.position  = \"top\",\n    plot.title       = element_text(face = \"bold\"),\n    panel.grid.minor = element_blank()\n  )\n\n\n\n\n\n\n\n\nFigure 1: Difference-in-Differences: Average FTE Employment in NJ vs PA\n\n\n\n\n\n\n图形解读：如果最低工资减少就业，我们应看到 NJ（红线）在政策后下降，而 PA（蓝线）保持稳定。但实际上 NJ 的就业上升，PA 下降，DiD = 2.75，说明最低工资对就业没有负面影响，甚至略有正效应。"
+  },
+  {
+    "objectID": "posts/hw2-card-krueger/index.html#结论",
+    "href": "posts/hw2-card-krueger/index.html#结论",
+    "title": "复现 Card & Krueger (1994)：最低工资与就业",
+    "section": "7. 结论",
+    "text": "7. 结论\n本次复现成功验证了 Card & Krueger (1994) 的核心发现：\n\n\n\n结果\n论文原文\n本次复现\n\n\n\n\nNJ 调查前 FTE 均值\n20.44\n20.44\n\n\nPA 调查前 FTE 均值\n23.33\n23.33\n\n\nDiD 估计量\n2.76\n2.75\n\n\n\n为什么 DiD 能得出因果结论？\n传统方法只看 NJ 政策前后的变化，但这会混入宏观经济变化（如经济衰退、季节效应）。DiD 通过减去 PA 的同期变化，巧妙地控制了这些共同干扰因素，使我们能将剩余差异归因于最低工资政策本身。\n这篇论文的革命性意义在于：它用自然实验（Natural Experiment）+ 双重差分方法，在没有随机分配的情况下，得出了近似因果的结论，开创了现代实证经济学的研究范式。"
+  },
+  {
+    "objectID": "posts/hw2-card-krueger/index.html#参考文献",
+    "href": "posts/hw2-card-krueger/index.html#参考文献",
+    "title": "复现 Card & Krueger (1994)：最低工资与就业",
+    "section": "参考文献",
+    "text": "参考文献\nCard, David, and Alan B. Krueger. 1994. “Minimum Wages and Employment: A Case Study of the Fast-Food Industry in New Jersey and Pennsylvania.” American Economic Review 84(4): 772–793."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "rsm-y7niu.github.io",
+    "section": "",
+    "text": "Post With Code\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 22, 2026\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\n复现 Card & Krueger (1994)：最低工资与就业\n\n\n\n\n\n\n\n\nApr 22, 2026\n\n\nYinkai Niu\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nApr 19, 2026\n\n\nTristan O’Malley\n\n\n\n\n\nNo matching items"
+  }
+]
