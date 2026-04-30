@@ -229,7 +229,8 @@ window.Quarto = {
   <li><a href="#hypothesis-testing" id="toc-hypothesis-testing" class="nav-link" data-scroll-target="#hypothesis-testing">Hypothesis Testing</a></li>
   <li><a href="#the-t-test-as-a-regression" id="toc-the-t-test-as-a-regression" class="nav-link" data-scroll-target="#the-t-test-as-a-regression">The T-Test as a Regression</a></li>
   <li><a href="#the-problem-with-peeking" id="toc-the-problem-with-peeking" class="nav-link" data-scroll-target="#the-problem-with-peeking">The Problem with Peeking</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li><a href="#wrap-up" id="toc-wrap-up" class="nav-link" data-scroll-target="#wrap-up">Wrap-up</a></li>
+  <li><a href="#references-further-reading" id="toc-references-further-reading" class="nav-link" data-scroll-target="#references-further-reading">References &amp; Further Reading</a></li>
   </ul>
 </nav>
     </div>
@@ -247,7 +248,7 @@ window.Quarto = {
 <li><strong>CTA A</strong>: “Sign up for our newsletter here!”</li>
 <li><strong>CTA B</strong>: “Stay up to date by signing up!”</li>
 </ul>
-<p>To find out which performs better, we run an <strong>A/B test</strong>. Each visitor who arrives at the page is randomly assigned to see one of the two CTAs — half see version A, half see version B. We then compare the sign-up rates between the two groups. Because assignment is random, any difference in outcomes can be attributed to the CTA itself rather than to who happened to visit. This makes the A/B test a clean, causal experiment.</p>
+<p>To find out which performs better, we run an <strong>A/B test</strong>. Each visitor who arrives at the page is randomly assigned to see one of the two CTAs (we’ll use a 50/50 split, but the math works for any random allocation), and we then compare the sign-up rates between the two groups. Because assignment is random, any difference in outcomes can be attributed to the CTA itself rather than to who happened to visit. This makes the A/B test a clean, causal experiment.</p>
 <p>In this post, we walk through the full statistical machinery behind an A/B test: how to model the data, why our estimator works (Law of Large Numbers), how to quantify uncertainty (Bootstrap), why normal-based inference is valid (Central Limit Theorem), how to perform a formal hypothesis test, and what can go wrong if we peek at results too early.</p>
 <hr>
 </section>
@@ -345,7 +346,7 @@ window.Quarto = {
 </section>
 <section id="bootstrap-standard-errors" class="level2">
 <h2 class="anchored" data-anchor-id="bootstrap-standard-errors">Bootstrap Standard Errors</h2>
-<p>Knowing that our estimator is <em>accurate</em> (it converges to the truth) is only half the story. We also need to know how <em>precise</em> it is for any given sample size. A point estimate of <span class="math inline">\(\hat{\theta} = 0.04\)</span> is not very useful without some measure of uncertainty.</p>
+<p>Knowing that our estimator is <em>accurate</em> (it converges to the truth) is only half the story. We also need to know how <em>precise</em> it is for any given sample size. A point estimate <span class="math inline">\(\hat{\theta}\)</span> is not very useful without some measure of uncertainty around it.</p>
 <p><strong>Bootstrapping</strong> is a resampling method that estimates the variability of a statistic without requiring a closed-form formula. The idea is simple: we pretend our observed sample <em>is</em> the population, resample from it with replacement many times, compute the statistic of interest each time, and use the standard deviation of those resampled statistics as our estimate of the standard error.</p>
 <div class="cell">
 <details class="code-fold">
@@ -854,10 +855,20 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The two standard errors are nearly identical, which is reassuring — bootstrapping recovers the same precision estimate as the closed-form formula without requiring any distributional assumptions.</p>
+<p>The two standard errors are nearly identical, which is reassuring — bootstrapping recovers the same precision estimate as the closed-form formula without requiring any distributional assumptions. The advantage of the bootstrap is that it works equally well for statistics where no clean formula exists; the cost is just computation, which is cheap.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/bootstrap-hist-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>The bootstrap distribution of θ̂. The spread of this distribution is the bootstrap standard error; the dashed lines mark the resulting 95% confidence interval.</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p>Using the bootstrapped standard error, our <strong>95% confidence interval</strong> for <span class="math inline">\(\theta\)</span> is:</p>
 <p><span class="math display">\[\hat{\theta} \pm 1.96 \times \widehat{SE} = [-0.008,\ 0.062]\]</span></p>
-<p>This interval does <strong>not</strong> contain zero, suggesting that CTA A outperforms CTA B. However, we should interpret this cautiously — we set up the simulation knowing the truth. In a real experiment, we would not have that luxury.</p>
+<p>The right way to interpret this: if we re-ran the whole experiment many, many times and built an interval this way each time, about 95% of those intervals would contain the true <span class="math inline">\(\theta\)</span>. Reassuringly, our interval covers the true value of 0.04. Whether or not it also covers 0 — the threshold for “no effect” — is the question the formal hypothesis test in two sections will answer.</p>
 <hr>
 </section>
 <section id="the-central-limit-theorem" class="level2">
@@ -893,7 +904,7 @@ window.Quarto = {
 <span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Central Limit Theorem: Sampling Distribution of θ̂"</span>,</span>
 <span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"1,000 simulated experiments at each sample size. Red dashed line = true θ = 0.04."</span>,</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="st">"θ̂ = X̄_A − X̄_B"</span>,</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="fu">expression</span>(<span class="fu">hat</span>(theta) <span class="sc">==</span> <span class="fu">bar</span>(X)[A] <span class="sc">-</span> <span class="fu">bar</span>(X)[B]),</span>
 <span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Density"</span></span>
 <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
@@ -914,7 +925,11 @@ window.Quarto = {
 <section id="hypothesis-testing" class="level2">
 <h2 class="anchored" data-anchor-id="hypothesis-testing">Hypothesis Testing</h2>
 <p>Now that we know the sampling distribution of <span class="math inline">\(\hat{\theta}\)</span> is approximately Normal for large samples, we can perform a formal hypothesis test.</p>
-<p>We set up: - <strong>Null hypothesis</strong> <span class="math inline">\(H_0: \theta = 0\)</span> — the two CTAs produce the same sign-up rate. - <strong>Alternative hypothesis</strong> <span class="math inline">\(H_1: \theta \neq 0\)</span> — the two CTAs perform differently.</p>
+<p>We set up:</p>
+<ul>
+<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0: \theta = 0\)</span> — the two CTAs produce the same sign-up rate.</li>
+<li><strong>Alternative hypothesis</strong> <span class="math inline">\(H_1: \theta \neq 0\)</span> — the two CTAs perform differently.</li>
+</ul>
 <p>The goal is to assess whether our data provide enough evidence to reject <span class="math inline">\(H_0\)</span>.</p>
 <p>To do this, we standardize <span class="math inline">\(\hat{\theta}\)</span> to form a <strong>test statistic</strong>:</p>
 <p><span class="math display">\[z = \frac{\hat{\theta} - 0}{SE(\hat{\theta})}\]</span></p>
@@ -1432,7 +1447,8 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>With a p-value of 0.1306, which is above the conventional threshold of 0.05, we fail to reject the null hypothesis. The data are consistent with CTA A having a higher sign-up rate than CTA B — though we should remember this is a simulation where we set the truth ourselves.</p>
+<p>With a p-value of 0.1306, which is above the conventional threshold of 0.05, we <strong>fail to reject</strong> the null hypothesis. Note carefully what this does and does not mean: the data are <em>consistent with</em> the two CTAs having the same sign-up rate, but that is not the same as proving they are equal. With a true effect of only 4 percentage points, our sample of n = 1,000 per group sits right at the edge of being able to detect it reliably — this experiment simply did not happen to produce a strong enough signal.</p>
+<p>This sensitivity — where a true 4-point effect can land on either side of the 0.05 threshold depending on the random draw — is exactly why <strong>sample size matters</strong>, and why power calculations should be part of designing any A/B test.</p>
 <hr>
 </section>
 <section id="the-t-test-as-a-regression" class="level2">
@@ -1963,7 +1979,14 @@ window.Quarto = {
 </div>
 </div>
 <p>The coefficient <span class="math inline">\(\hat{\beta}_1\)</span> matches <span class="math inline">\(\hat{\theta}\)</span> from the two-sample approach exactly. The standard error differs slightly because OLS assumes a single pooled variance, while our earlier formula allowed separate variances for each group — but for large samples the difference is negligible.</p>
-<p>The power of this equivalence: by adding a covariate to the regression (e.g., device type, geography), we can control for confounders and improve precision, all within the same framework.</p>
+<p><strong>Why this equivalence matters in practice.</strong> A/B tests are randomized experiments, so we don’t need regression to <em>control for confounding</em> — randomization already takes care of that. What regression buys us instead is <strong>flexibility</strong>:</p>
+<ul>
+<li><strong>More than two arms?</strong> Add more indicator variables (A vs.&nbsp;B vs.&nbsp;C and beyond).</li>
+<li><strong>Continuous covariates available</strong> (device type, geography, prior visits)? Add them to absorb residual variance and tighten standard errors — even though the point estimate of <span class="math inline">\(\theta\)</span> is already unbiased without them.</li>
+<li><strong>Heterogeneous effects?</strong> Add an interaction term (<span class="math inline">\(D_i \times \text{segment}_i\)</span>) to test whether the treatment works differently in different subgroups.</li>
+<li><strong>Different functional form?</strong> Swap in logistic regression for a probability outcome.</li>
+</ul>
+<p>In the simple two-arm case, regression and the two-sample test give the same answer. In every more complex case, regression keeps working while the two-sample formula doesn’t generalize. That’s why most modern A/B testing infrastructure is built on top of regression.</p>
 <hr>
 </section>
 <section id="the-problem-with-peeking" class="level2">
@@ -2483,12 +2506,38 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The empirical false positive rate under peeking is approximately <strong>19.6%</strong> — far above the nominal 5%. In other words, even when CTA A and CTA B are identical, peeking gives you roughly a 1-in-4 chance of incorrectly declaring a winner.</p>
-<p>This result highlights a fundamental principle of classical frequentist hypothesis testing: the Type I error rate guarantee of 5% applies to a <strong>single pre-specified test</strong>, not to a sequence of tests on accumulating data. If you want to monitor experiments continuously, you need methods designed for sequential testing (such as sequential probability ratio tests or alpha-spending functions) — not repeated application of a standard z-test.</p>
+<p>The empirical false positive rate under peeking is approximately <strong>19.6%</strong> — about 3.9× the nominal 5%. In other words, even when CTA A and CTA B are <em>identical</em>, peeking gives you roughly a 20% chance of incorrectly declaring a winner.</p>
+<p>This result highlights a fundamental principle of classical frequentist hypothesis testing: the Type I error rate guarantee of 5% applies to a <strong>single, pre-specified test</strong> — not to a sequence of tests on accumulating data. Some practical implications:</p>
+<ul>
+<li><strong>Pre-register the sample size.</strong> Decide before the experiment how many observations you’ll collect, and stick to it.</li>
+<li><strong>If you must monitor the experiment as it runs</strong>, use methods designed for it: group-sequential designs, alpha-spending functions, sequential probability ratio tests, or always-valid p-values (mSPRT). These explicitly account for multiple looks and control the overall error rate.</li>
+<li><strong>Be skeptical of “we stopped early because it was significant” stories.</strong> They are exactly the experiments most likely to be false positives.</li>
+</ul>
 <hr>
 </section>
-<section id="references" class="level2">
-<h2 class="anchored" data-anchor-id="references">References</h2>
+<section id="wrap-up" class="level2">
+<h2 class="anchored" data-anchor-id="wrap-up">Wrap-up</h2>
+<p>We started with a simple business question — <em>which CTA converts better?</em> — and built up the statistical scaffolding needed to turn it into a defensible answer. Each piece earned its place:</p>
+<ul>
+<li><strong>The Bernoulli model</strong> gave us a clean way to talk about a binary outcome.</li>
+<li><strong>The Law of Large Numbers</strong> told us that with enough data, our estimate <span class="math inline">\(\hat\theta\)</span> will land near the truth.</li>
+<li><strong>The bootstrap</strong> gave us a way to put error bars on <span class="math inline">\(\hat\theta\)</span> without leaning on a closed-form formula.</li>
+<li><strong>The Central Limit Theorem</strong> told us <em>what shape</em> those error bars take, which let us…</li>
+<li><strong>Run a hypothesis test</strong> with a real, calibrated false-positive rate.</li>
+<li><strong>Re-cast the test as a regression</strong> to make the same machinery extend to richer designs.</li>
+<li><strong>Quantified the cost of peeking</strong>, the most common way A/B tests go quietly wrong in practice.</li>
+</ul>
+<p>The same logic — <em>model, estimator, sampling distribution, inference</em> — runs through almost every applied statistics problem. Once you’ve seen it on a CTA test, you’ve seen most of it.</p>
+<hr>
+</section>
+<section id="references-further-reading" class="level2">
+<h2 class="anchored" data-anchor-id="references-further-reading">References &amp; Further Reading</h2>
+<ul>
+<li>Efron, B. (1979). <em>Bootstrap Methods: Another Look at the Jackknife.</em> The Annals of Statistics, 7(1), 1–26.</li>
+<li>Wasserman, L. (2004). <em>All of Statistics: A Concise Course in Statistical Inference.</em> Springer. (Chapters 6–10 cover the LLN, CLT, bootstrap, and hypothesis testing.)</li>
+<li>Johari, R., Koomen, P., Pekelis, L., &amp; Walsh, D. (2017). <em>Peeking at A/B Tests: Why It Matters, and What to Do About It.</em> Proceedings of KDD 2017. — The seminal modern paper on the peeking problem and always-valid inference.</li>
+<li>Kohavi, R., Tang, D., &amp; Xu, Y. (2020). <em>Trustworthy Online Controlled Experiments: A Practical Guide to A/B Testing.</em> Cambridge University Press.</li>
+</ul>
 <p>This post was completed as part of <strong>MGTA 495</strong> at the Rady School of Management, UC San Diego.</p>
 
 
