@@ -273,6 +273,10 @@ The NJ coefficient of **`r round(coef(mod)[2], 2)`** matches the paper's reporte
 
 The paper only presents these results in tables. The chart below makes the DiD logic immediately visible.
 
+### Visual Summary of the Treatment and Control Groups
+
+This visual summary helps readers compare the before-and-after employment changes for New Jersey and Pennsylvania before interpreting the DiD estimate.
+
 ```{r}
 #| label: fig-did
 #| fig-cap: "Difference-in-Differences: Average FTE Employment in NJ vs PA, Before and After the 1992 Minimum Wage Increase"
