@@ -1,11 +1,17 @@
 project:
   type: website
+  output-dir: docs
 
 website:
   title: "rsm-y7niu.github.io"
   navbar:
     right:
-      - about.qmd
+      - href: index.qmd
+        text: Home
+      - href: projects.qmd
+        text: Projects
+      - href: about.qmd
+        text: About
       - icon: github
         href: https://github.com/
       - icon: twitter
@@ -16,7 +22,4 @@ format:
       - cosmo
       - brand
     css: styles.css
-
-
-
-output-dir: docs
+    toc: true

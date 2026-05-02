@@ -1,0 +1,63 @@
+---
+title: "Projects"
+page-layout: full
+title-block-banner: true
+---
+
+A mix of class projects, replications, and experiments — most live as posts on this site, with full code on GitHub. Two threads run through almost everything: **measuring marketing impact honestly** and **building data workflows that don't fall over.**
+
+::: {.project-grid}
+
+::: {.project-card}
+### 🧪 A/B Testing a Call to Action
+*Simulating classical frequentist statistics from scratch*
+
+Walked through the Law of Large Numbers, sampling distributions, and hypothesis testing by simulating an A/B test on two CTAs. Built intuition for *why* the t-test works rather than just calling `scipy.stats`.
+
+**Stack:** Python · NumPy · matplotlib · simulation
+
+[Read the post →](posts/){.project-link}
+:::
+
+::: {.project-card}
+### 📈 Did the Minimum Wage Kill Jobs?
+*Replicating Card & Krueger (1994) — Difference-in-Differences*
+
+Re-ran the canonical NJ–PA minimum wage study using diff-in-diff. A clean exercise in causal inference: parallel trends, control selection, and why the "obvious" answer (wages up → jobs down) didn't show up in the data.
+
+**Stack:** R · DiD · ggplot2 · econometrics
+
+[Read the post →](posts/){.project-link}
+:::
+
+::: {.project-card}
+### 💻 Post With Code
+*Reproducible analysis with executable code blocks*
+
+A working example of analysis-as-code: Quarto chunks that execute on render so the report and the code can never drift apart. Small project, but the principle scales.
+
+**Stack:** Quarto · R · reproducibility
+
+[Read the post →](posts/){.project-link}
+:::
+
+::: {.project-card}
+### 🌐 This Website
+*Personal site, customized Quarto theme*
+
+The site you're reading. Built with Quarto, customized SCSS theming, custom card grid components, and deployed via GitHub Pages. Source on GitHub.
+
+**Stack:** Quarto · SCSS · GitHub Pages
+
+[View on GitHub →](https://github.com/rsm-y7niu){.project-link}
+:::
+
+:::
+
+---
+
+## In progress
+
+I'm currently working on a few more things — a marketing mix modeling case study and a small ETL pipeline project. They'll show up here once they're in shape to share.
+
+If you want to talk about any of this, find me on [LinkedIn](about.qmd) or [email](mailto:y7niu@ucsd.edu).

@@ -1,1 +1,171 @@
-/* css styles */
+/* ============================================
+   Custom theme for rsm-y7niu.github.io
+   ============================================ */
+
+/* ---------- Color palette ---------- */
+:root {
+  --accent: #2563eb;          /* primary blue */
+  --accent-soft: #dbeafe;     /* hover/highlight */
+  --accent-dark: #1e40af;
+  --ink: #1f2937;             /* body text */
+  --ink-soft: #6b7280;        /* secondary text */
+  --bg-soft: #f9fafb;         /* card backgrounds */
+  --border: #e5e7eb;
+}
+
+/* ---------- Typography ---------- */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--ink);
+  line-height: 1.7;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+h1 { font-size: 2.4rem; }
+h2 {
+  font-size: 1.6rem;
+  margin-top: 2.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--accent-soft);
+}
+h3 { font-size: 1.2rem; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover {
+  color: var(--accent-dark);
+  text-decoration: underline;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+  border-bottom: 1px solid var(--border);
+  background-color: white !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.navbar .nav-link {
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+.navbar .nav-link:hover {
+  color: var(--accent) !important;
+}
+
+/* ---------- Title block (the banner area) ---------- */
+.quarto-title-block .quarto-title-banner {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  color: white;
+}
+.quarto-title-block h1.title {
+  color: white;
+  font-weight: 800;
+}
+
+/* ---------- Project grid (used on projects.qmd) ---------- */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.project-card {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.10);
+  border-color: var(--accent);
+}
+.project-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.3rem;
+  color: var(--accent-dark);
+}
+.project-card em {
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+.project-card p { margin: 0.8rem 0; }
+
+.project-link {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+/* ---------- Skill tags (used on about.qmd) ---------- */
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 1.5rem;
+}
+.tag {
+  display: inline-block;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: transform 0.15s ease;
+}
+.tag:hover {
+  transform: scale(1.05);
+}
+
+/* ---------- About page (trestles template) ---------- */
+.about-image {
+  border: 4px solid white;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+/* ---------- Listing (homepage posts) ---------- */
+.quarto-listing-default .listing-item {
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 0;
+  transition: background 0.15s ease;
+}
+.quarto-listing-default .listing-item:hover {
+  background: var(--bg-soft);
+}
+
+/* ---------- Footer ---------- */
+footer.footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+/* ---------- Code blocks ---------- */
+pre {
+  border-left: 3px solid var(--accent);
+  background: var(--bg-soft) !important;
+  border-radius: 6px;
+}
+
+/* ---------- Responsive tweaks ---------- */
+@media (max-width: 600px) {
+  h1 { font-size: 1.8rem; }
+  .project-grid { grid-template-columns: 1fr; }
+}

@@ -1,19 +1,54 @@
 ---
-title: "About"
+title: "About Me"
 image: profile.jpg
 about:
-  template: jolla
+  template: trestles
+  image-shape: rounded
+  image-width: 14em
   links:
-    - icon: twitter
-      text: Twitter
-      href: https://twitter.com
     - icon: linkedin
       text: LinkedIn
       href: https://linkedin.com
     - icon: github
-      text: Github
-      href: https://github.com
-
+      text: GitHub
+      href: https://github.com/rsm-y7niu
+    - icon: envelope
+      text: Email
+      href: mailto:y7niu@ucsd.edu
 ---
 
-About this blog
+## Hi, I'm Yinkai 👋
+
+I'm a Master's student in **Business Analytics** at the [Rady School of Management, UC San Diego](https://rady.ucsd.edu/).
+
+I started out studying **Civil Engineering** at Kunming University of Science and Technology — building things that don't fall down teaches you to respect data and second-guess assumptions. Somewhere along the way I realized the questions I cared about most weren't structural: *which campaigns actually drive revenue? Which experiments are real, and which are noise?* That pulled me toward analytics, and eventually to Rady.
+
+The throughline is the same: turning messy inputs into things people can stand on.
+
+## What I work on
+
+::: {.skill-tags}
+[Marketing Analytics]{.tag} [Causal Inference]{.tag} [A/B Testing]{.tag} [Attribution]{.tag} [MMM]{.tag} [Data Engineering]{.tag} [ETL Pipelines]{.tag} [SQL]{.tag} [dbt]{.tag} [Python]{.tag} [R]{.tag}
+:::
+
+**Marketing Analytics** — Lift studies, holdout experiments, attribution, marketing mix modeling. The honest version of "did this campaign work?"
+
+**Data Engineering** — None of the above works if the pipeline is held together with duct tape. I care about reproducible, well-tested workflows.
+
+## Education
+
+**UC San Diego — Rady School of Management**  
+*MS in Business Analytics* · 2025–2026
+
+**Kunming University of Science and Technology**  
+*B.Eng in Civil Engineering*
+
+## Outside of work
+
+A non-exhaustive list of things I'd rather be doing on a Saturday:
+
+::: {.skill-tags}
+[🎮 PS5]{.tag} [🏋️ Lifting]{.tag} [🚙 Off-roading]{.tag} [⛺ Camping]{.tag} [🎬 Movies]{.tag} [☕ Philz Coffee]{.tag}
+:::
+
+If any of this — the work or the off-roading — overlaps with what you're into, [say hi](mailto:y7niu@ucsd.edu).
